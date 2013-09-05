@@ -3,13 +3,16 @@ favicon-cheat-sheet
 
 A painfully obsessive cheat sheet to favicon sizes/types. Compiled from:
 
+* http://mathiasbynens.be/notes/rel-shortcut-icon <-- special thanks `@mathiasbynens`_
+* http://mathiasbynens.be/notes/touch-icons <-- special thanks `@mathiasbynens`_
 * http://www.jonathantneal.com/blog/understand-the-favicon/
 * https://en.wikipedia.org/wiki/Favicon.ico
 * http://snook.ca/archives/design/making_a_good_favicon
 * http://www.netmagazine.com/features/create-perfect-favicon
-* http://mathiasbynens.be/notes/touch-icons
 * http://www.ravelrumba.com/blog/android-apple-touch-icon/
 * http://msdn.microsoft.com/en-us/library/ie/gg491740(v=vs.85).aspx
+
+.. _`@mathiasbynens`: https://github.com/mathiasbynens
 
 The HTML
 --------
@@ -17,20 +20,11 @@ The HTML
 Basics
 ~~~~~~
 
-Insert into `<head>`:
+For the main favicon itself, it's best for cross-browser compatibility not to
+use any HTML. Just name the file `favicon.ico` and place it in the root of your
+domain. [1]_ [2]_
 
-    .. code-block:: html
-
-        <link rel="icon" sizes="16x16 32x32" href="/path/to/favicon.ico">
-        <!--[if IE]><link rel="shortcut icon" href="/path/to/favicon.ico"><![endif]-->
-
-This is optimized for the best experience in every desktop browser:
-
- * Most browsers use the standard HTML5-style line 1.
- * IE 9 and below will use line 2, the inner part of which follows the spec in http://msdn.microsoft.com/en-us/library/ie/gg491740(v=vs.85).aspx
- * Note: IE 10 doesn't support conditional comments. There is no documentation
-   on whether IE 10 has HTML5-style icon declaration support. TODO: verify
-   whether IE 10 will use line 1.
+This works in every desktop browser/version all the way back to IE6, except for SeaMonkey. [1]_
 
 Optional But Encouraged
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,7 +36,7 @@ You probably also want the following:
     .. code-block:: html
 
         <link rel="apple-touch-icon-precomposed" href="path/to/favicon-152.png">
-
+   
 2. IE 10 Metro tile icon (Metro equivalent of apple-touch-icon):
 
     .. code-block:: html
@@ -57,7 +51,7 @@ Very Optional, for the Obsessive
 
 If you're obsessive, you want all this too:
 
-1. Largest to smallest apple-touch-icons:
+1. Largest to smallest apple-touch-icons [3]_:
 
     .. code-block:: html
 
@@ -78,7 +72,6 @@ If you're obsessive, you want all this too:
 
         <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
         <link rel="apple-touch-icon-precomposed" href="/path/to/favicon-57.png">
-
 
 2. Favicons targeted to any additional png sizes that you add that aren't covered above:
 
@@ -136,6 +129,7 @@ Size    Purpose
 ======= =======================================================================
 16x16   IE9 address bar, Pinned site Jump List/Toolbar/Overlay
 32x32   New tab page in IE, taskbar button in Win 7+, Safari Read Later sidebar
+64x64   Windows site icons [4]_, Safari Read Later sidebar in HiDPI/Retina
 ======= =======================================================================
 
 If you're obsessive and don't mind 1-3kb extra size, also include these sizes
@@ -144,8 +138,7 @@ in your .ico:
 ======= =======================================================================
 Size    Purpose
 ======= =======================================================================
-48x48   Windows site icons (no specifics given by MSDN)
-64x64   Windows site icons (no specifics given by MSDN)
+48x48   Windows site icons [4]_
 ======= =======================================================================
 
 Helpful Tools
@@ -159,6 +152,7 @@ I haven't tried them all, so use at your own risk.
 * Creating .ico files: http://www.imagemagick.org/Usage/thumbnails/#favicon
 * Dynamically setting favicons: https://github.com/HenrikJoreteg/favicon-setter
 * Fancy favicon tricks: https://github.com/component/piecon
+* Web Icon - a simple shell script that generates favicon and touch icons: https://github.com/emarref/webicon
 
 Forcing a Favicon Refresh
 -------------------------
@@ -174,7 +168,12 @@ Forcing a Favicon Refresh
     .. code-block:: html
 
         <link rel="shortcut icon" href="http://www.yoursite.com/favicon.ico?v=2" />
+        
+* Some proxies and load balancers can fail to read query strings in edge cases. For large versioned deployments, put your version number in the filename. 
 
+    .. code-block:: html
+
+        <link rel="shortcut icon" href="http://www.yoursite.com/favicon-v2.ico" />
 FAQ
 ---
 
@@ -184,6 +183,12 @@ FAQ
 **Is it true that favicons should be in the site root?**
 No, that's only if you don't explicitly specify the browser/device-specific
 `<link>` tags with a favicon path. See https://en.wikipedia.org/wiki/Favicon.ico.
+
+If you don't have favicon.ico in the root consider adding one, or returning a HTTP 204 instead.
+Many tools and services e.g. bookmarking sites, feed readers, web crawlers etc., request a 
+favicon.ico from the site root, and so recieve a HTTP 404 if it's not present. In the worst 
+case some frameworks will return a custom error page which is likely to be many times larger
+than the missing favicon.
 
 **Is it true that the png has to be named favicon.png?**
 No, this has never been true as far as I can tell from my obsessive research.
@@ -218,3 +223,11 @@ Contribute!
 
 Send pull requests if you have anything to add/change, providing citations
 and justification. I'd love to see this improve.
+
+References
+----------
+
+.. [1] http://mathiasbynens.be/notes/rel-shortcut-icon
+.. [2] http://www.w3.org/html/wg/drafts/html/CR/links.html#rel-icon
+.. [3] Adapted from http://mathiasbynens.be/notes/touch-icons
+.. [4] No specifics given by MSDN.
